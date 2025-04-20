@@ -9,7 +9,6 @@ const Contact = () => {
     subject: '',
     message: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -20,7 +19,6 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
     try {
       const response = await fetch("https://formsubmit.co/ajax/patelvishal77890@gmail.com", {
@@ -34,14 +32,13 @@ const Contact = () => {
           email: formData.email,
           _subject: formData.subject,
           message: formData.message,
-          _captcha: "false",
-          _template: "box" // Try different templates if needed
+          _captcha: "false"
         })
       });
 
       const data = await response.json();
       
-      if (response.ok && data.success === "true") {
+      if (data.success === "true") {
         toast.success("Message sent successfully! ✅", {
           position: "top-right",
           autoClose: 3000,
@@ -51,6 +48,7 @@ const Contact = () => {
           draggable: true,
           theme: "dark",
         });
+        // Reset form
         setFormData({
           name: '',
           email: '',
@@ -58,11 +56,11 @@ const Contact = () => {
           message: ''
         });
       } else {
-        throw new Error(data.message || 'Failed to send message');
+        throw new Error('Failed to send message');
       }
     } catch (error) {
       console.error('Error:', error);
-      toast.error(error.message || "Failed to send message. Please try again.", {
+      toast.error("Failed to send message. Please try again.", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -71,8 +69,6 @@ const Contact = () => {
         draggable: true,
         theme: "dark",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -139,12 +135,9 @@ const Contact = () => {
           
           <button
             type="submit"
-            disabled={isSubmitting}
-            className={`w-full bg-gradient-to-r from-purple-600 to-pink-500 py-3 text-white font-semibold rounded-md hover:opacity-90 transition ${
-              isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
-            }`}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-500 py-3 text-white font-semibold rounded-md hover:opacity-90 transition"
           >
-            {isSubmitting ? 'Sending...' : 'Send'}
+            Send
           </button>
         </form>
       </div>
